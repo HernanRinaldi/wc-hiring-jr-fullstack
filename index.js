@@ -8,7 +8,7 @@ However, if you have any questions, please send us an email
 to support@webcat.app with the subject "Jr Fullstack Test Questions"
 */
 
-import $t from './libs/test.js'
+import $t from "./libs/test.js";
 
 /*
 1. Data manipulation:
@@ -33,12 +33,55 @@ import $t from './libs/test.js'
   Hint: Use native array methods as well as
     Lodash(https://lodash.com/docs) modules.
 */
-import _ from 'lodash'
-const source = $t.source(1)
+import _ from "lodash";
+const source = $t.source(1);
 $t.answer(1, async () => {
   // Your code goes here
-  return 
-})
+  const targetData = {};
+
+  const filterByExpense = await source
+    .filter((el) => el.type === "expense")
+    .map((el) => el.amount);
+  const sumaExpenses = _.sum(filterByExpense);
+
+  const filterByIncome = await source
+    .filter((el) => el.type === "income")
+    .map((el) => el.amount);
+  const sumaIncome = _.sum(filterByIncome);
+
+  const balance = sumaIncome - sumaExpenses;
+
+  const filterByRestaurants = await source
+    .filter((el) => el.category === "Restaurants")
+    .map((el) => el.amount);
+  const sumaRestaurants = _.sum(filterByRestaurants) * -1;
+
+  const filterByIncomes = await source
+    .filter((el) => el.category === "Income")
+    .map((el) => el.amount);
+  const sumaIncomes = _.sum(filterByIncomes);
+
+  const filterByGroceries = await source
+    .filter((el) => el.category === "Groceries")
+    .map((el) => el.amount);
+  const sumaGroceries = _.sum(filterByGroceries) * -1;
+
+  const filterByRent = await source
+    .filter((el) => el.category === "Rent")
+    .map((el) => el.amount);
+  const sumaRents = _.sum(filterByRent) * -1;
+
+  targetData.balance = balance;
+  targetData.income = sumaIncome;
+  targetData.expenses = sumaExpenses;
+  targetData.byCategories = {
+    Restaurants: sumaRestaurants,
+    Income: sumaIncomes,
+    Groceries: sumaGroceries,
+    Rent: sumaRents,
+  };
+  return targetData;
+});
 
 /*
 2. Asynchronous programming: 
@@ -47,11 +90,11 @@ $t.answer(1, async () => {
   3. Finally, return the list of resulting texts as an array.
     
 */
-const $source = $t.source(2)
+const $source = $t.source(2);
 $t.answer(2, async () => {
-    // Your code goes here:
-    // 1. Get ids: $source.getIds()
-    // 2. Get text for every id: $source.getText(id)
-    // 3. Return array of texts
-    return 
-})
+  const resultIds = await $source.getIds();
+  const resultIdsText = await Promise.all(
+    resultIds.map((id) => $source.getText(id))
+  );
+  return resultIdsText;
+});
